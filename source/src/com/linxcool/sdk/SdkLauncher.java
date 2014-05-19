@@ -28,13 +28,13 @@ public class SdkLauncher {
 		}
 	}
 	
-	public void onCommand(Context context, Intent intent){
+	public static void onCommand(Context context, Intent intent){
 		if(kernelInstance != null){
 			kernelInstance.callCommand(context, intent);
 		}
 	}
 	
-	public void onDestory(){
+	public static void onDestory(){
 		if(kernelInstance != null){
 			kernelInstance.callDestroy();
 		}
