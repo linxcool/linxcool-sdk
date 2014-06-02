@@ -12,7 +12,6 @@ public class PluginInfo {
 	public String plugName;
 	public long plugVer;
 	
-	public boolean isLatest;
 	public String updateUrl;
 	public String savePath;
 	public String fileName;

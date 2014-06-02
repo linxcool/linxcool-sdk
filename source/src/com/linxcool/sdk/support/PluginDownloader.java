@@ -37,7 +37,7 @@ public class PluginDownloader{
 		 * @param code
 		 * @param msg
 		 */
-		public void onError(int code, String msg);
+		public void onDError(int code, String msg);
 	}
 
 	private static final String TAG = "PluginDownloader";
@@ -84,7 +84,7 @@ public class PluginDownloader{
 			public void onError(int code, DownloadFile fileInfo) {
 				String key = SecurityUtil.md5(fileInfo.appInfo.apkUrl);
 				tasks.remove(key);
-				listener.onError(code, "download plugin fail");
+				listener.onDError(code, "download plugin fail");
 			}
 			
 			@Override
