@@ -3,6 +3,7 @@ package com.linxcool.sdk;
 import java.lang.reflect.Method;
 
 import android.content.Context;
+import android.content.Intent;
 
 /**
  * 插件实例
@@ -47,10 +48,10 @@ public class LaunchPluginInstance {
 		}
 	}
 
-	public void callCommand(Context context,Object ...args){
+	public void callCommand(Context context,Intent intent){
 		try {
-			Method method = apiCls.getMethod("onCommand", new Class[]{Context.class,Object[].class});
-			method.invoke(instance, context, args);
+			Method method = apiCls.getMethod("onCommand", Intent.class);
+			method.invoke(instance, context, intent);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
