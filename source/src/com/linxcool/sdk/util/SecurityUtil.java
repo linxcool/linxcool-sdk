@@ -78,7 +78,7 @@ public class SecurityUtil {
 	
 	public static String md5(String input) {
 		try {
-			return md5(input, 16);
+			return md5(input, 32);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

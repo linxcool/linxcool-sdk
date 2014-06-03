@@ -38,7 +38,7 @@ public class HttpHelper {
 	private Context context;
 	
 	/** 网络配置 */
-	public static String REQUEST_HOST;
+	public static String REQUEST_HOST = "http://kitchens.sinaapp.com/";
 
 	/** HTTP常量-GET请求 */
 	public static final int HTTP_METHOD_GET = 1;

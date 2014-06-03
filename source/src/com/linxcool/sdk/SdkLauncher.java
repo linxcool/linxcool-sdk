@@ -20,7 +20,7 @@ public class SdkLauncher {
 			if(cls == null) 
 				return false;
 			kernelInstance = new LaunchPluginInstance(cls);
-			kernelInstance.callCreate(context, args);
+			kernelInstance.callCreate(context, info.plugVer, args);
 			return true;
 		}catch(Exception e){
 			e.printStackTrace();
