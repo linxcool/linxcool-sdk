@@ -50,7 +50,7 @@ public class LaunchPluginInstance {
 
 	public void callCommand(Context context,Intent intent){
 		try {
-			Method method = apiCls.getMethod("onCommand", Intent.class);
+			Method method = apiCls.getMethod("onCommand",Context.class, Intent.class);
 			method.invoke(instance, context, intent);
 		} catch (Exception e) {
 			e.printStackTrace();
