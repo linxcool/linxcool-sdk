@@ -16,7 +16,7 @@ public class KernelInstance extends KernelMapping{
 
 	public void onCreate(Context context, Object ...args){
 		try {
-			invoke(context, args);
+			invokeByName("onCreate", context, args);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -24,7 +24,7 @@ public class KernelInstance extends KernelMapping{
 
 	public void onCommand(Context context,Intent intent){
 		try {
-			invoke(context, intent);
+			invokeByName("onCommand", context, intent);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -32,7 +32,7 @@ public class KernelInstance extends KernelMapping{
 
 	public void onDestroy(){
 		try {
-			invoke();
+			invokeByName("onDestroy");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -17,8 +17,18 @@ public class KernelMapping {
 	}
 	
 	protected void invoke(Object... args) throws Exception{
-		StackTraceElement element = Thread.currentThread().getStackTrace()[3];
+		StackTraceElement element = Thread.currentThread().getStackTrace()[2];
 		String name = element.getMethodName();
+		Method[] methods = cls.getMethods();
+		for (Method method : methods) {
+			if(name.equals(method.getName())){
+				method.invoke(obj, args);
+				break;
+			}
+		}
+	}
+	
+	protected void invokeByName(String name, Object... args) throws Exception{
 		Method[] methods = cls.getMethods();
 		for (Method method : methods) {
 			if(name.equals(method.getName())){
