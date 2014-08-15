@@ -5,10 +5,10 @@ import java.util.Observer;
 
 import org.json.JSONObject;
 
-import com.linxcool.sdk.support.PluginDownloader;
-import com.linxcool.sdk.support.PluginDownloader.OnPluginDownloadListener;
-import com.linxcool.sdk.support.PluginInfo;
-import com.linxcool.sdk.support.PluginInfoManager;
+import com.linxcool.sdk.PluginDownloader;
+import com.linxcool.sdk.PluginInfo;
+import com.linxcool.sdk.PluginInfoManager;
+import com.linxcool.sdk.PluginDownloader.OnPluginDownloadListener;
 import com.linxcool.sdk.util.ResourceUtil;
 
 import android.app.Activity;
@@ -31,8 +31,8 @@ public class UpdatePluginAction extends ActionSupport implements OnPluginDownloa
 	private int plugVer;
 	
 	public UpdatePluginAction(Context context) {
-		super(context, ACTION_ID_UPDATE_PLUGIN);
-		method = HttpHelper.HTTP_METHOD_GET;
+		super(context);
+		httpHelper.setMethod(HttpHelper.HTTP_METHOD_GET);
 		addObserver(this);
 	}
 
@@ -55,7 +55,7 @@ public class UpdatePluginAction extends ActionSupport implements OnPluginDownloa
 		plugVer = Integer.parseInt(obj.getString("ver"));
 		
 		PluginInfo info = new PluginInfo(plugName, plugVer);
-		info.savePath = ResourceUtil.getPluginsFolder(context, plugName);
+		info.fileFolder = ResourceUtil.getPluginsFolder(context, plugName);
 		info.updateUrl = url;
 		info.fileName = PluginInfoManager.getPluginFileName(plugName, plugVer, ".jar");
 		

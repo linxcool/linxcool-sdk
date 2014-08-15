@@ -3,24 +3,26 @@ package com.linxcool.sdk;
 import android.content.Context;
 import android.content.Intent;
 
+/**
+ * SDK启动器
+ * @author 胡昌海(linxcool.hu)
+ */
 public class SdkLauncher {
 	
 	private static final String NAME_SDK_KERNEL = "kernelSdk";
 	private static final String SUFFIX_SDK_PLUGIN = ".jar";
 	
-	private static LaunchPluginInstance kernelInstance;
+	private static PluginInstance kernelInstance;
 	
 	public static boolean launch(Context context, Object... args){
 		try{
-			LaunchPluginInfo info = LaunchPluginInfoManager.getLocalPluginInfo(
+			PluginInfo info = PluginInfoManager.getLocalPluginInfo(
 					context, NAME_SDK_KERNEL, SUFFIX_SDK_PLUGIN);
-			if(info == null) 
-				return false;
-			Class<?> cls = LaunchPluginLoader.load(context, info);
-			if(cls == null) 
-				return false;
-			kernelInstance = new LaunchPluginInstance(cls);
-			kernelInstance.callCreate(context, info.plugVer, args);
+			if(info == null) return false;
+			Class<?> cls = PluginLoader.load(context, info);
+			if(cls == null) return false;
+			kernelInstance = new PluginInstance(cls);
+			kernelInstance.onCreate(context, info.version, args);
 			return true;
 		}catch(Exception e){
 			e.printStackTrace();
@@ -30,13 +32,13 @@ public class SdkLauncher {
 	
 	public static void onCommand(Context context, Intent intent){
 		if(kernelInstance != null){
-			kernelInstance.callCommand(context, intent);
+			kernelInstance.onCommand(context, intent);
 		}
 	}
 	
 	public static void onDestory(){
 		if(kernelInstance != null){
-			kernelInstance.callDestroy();
+			kernelInstance.onDestroy();
 		}
 	}
 }

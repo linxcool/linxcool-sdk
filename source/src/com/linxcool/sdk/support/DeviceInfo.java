@@ -10,7 +10,11 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.regex.Pattern;
+
+import com.linxcool.sdk.util.ResourceUtil;
+import com.linxcool.sdk.util.SecurityUtil;
 
 import android.Manifest.permission;
 import android.app.ActivityManager;
@@ -23,7 +27,9 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 /**
  * 设备信息
@@ -52,7 +58,7 @@ public class DeviceInfo {
 		TYPE_3G	//3G网络
 	}
 
-	public int mid;
+	public String mid;
 
 	/** 网络类型 */
 	public int netType;
@@ -109,6 +115,8 @@ public class DeviceInfo {
 	public DeviceInfo(Context context){
 		init(context);
 		check();
+		setDeviceId(context);
+		Log.v("DeviceInfo", "device id is " + mid);
 	}
 
 	void init(Context context){
@@ -179,6 +187,24 @@ public class DeviceInfo {
 		check();
 	}
 
+	void setDeviceId(Context context){
+		String device = ResourceUtil.readStringData(context, "device");
+		if(device != null){
+			mid = SecurityUtil.mixDecrypt(device);
+			if(!TextUtils.isEmpty(mid)) return;
+		}
+		
+		String src = String.format(
+				Locale.getDefault(), 
+				"SIZE_%dX%d-KEY_%s-HARD_%s-OTHER_%s", 
+				screenWidth, screenHeight, 
+				imei, 
+				cpuName + mac + memoryTotal,
+				phoneNumber + sdkVersion);
+		mid = SecurityUtil.md5(src);
+		ResourceUtil.writeStringData(context, "device", SecurityUtil.mixEncrypt(mid));
+	}
+	
 	/**
 	 * 电话状态是否可读
 	 * @param context

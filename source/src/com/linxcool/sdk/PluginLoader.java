@@ -1,4 +1,4 @@
-package com.linxcool.sdk.support;
+package com.linxcool.sdk;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -17,7 +17,7 @@ public class PluginLoader {
 	public static Class<?> load(Context context,PluginInfo pluginInfo){
 		try {
 			// JAR文件路径
-			String dexPath = pluginInfo.savePath + pluginInfo.fileName;
+			String dexPath = pluginInfo.fileFolder + pluginInfo.fileName;
 			// 系统优化DEX后存放路径
 			File optimizedDir = context.getDir("outdex", Context.MODE_PRIVATE);
 			// SO文件存放路径

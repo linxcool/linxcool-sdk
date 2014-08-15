@@ -1,4 +1,4 @@
-package com.linxcool.sdk.support;
+package com.linxcool.sdk;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,7 +65,7 @@ public class PluginDownloader{
 
 		String key = SecurityUtil.md5(pluginInfo.updateUrl);
 		if(tasks.containsKey(key)){
-			Log.w(TAG, "plugin is on downloading " + pluginInfo.plugName);
+			Log.w(TAG, "plugin is on downloading " + pluginInfo.name);
 			return ;
 		}
 
@@ -98,7 +98,7 @@ public class PluginDownloader{
 		AppInfo appInfo = new AppInfo();
 		appInfo.apkUrl = pluginInfo.updateUrl;
 		DownloadFile downloadFile = new DownloadFile(appInfo);
-		downloadFile.filePath = pluginInfo.savePath + pluginInfo.fileName;
+		downloadFile.filePath = pluginInfo.fileFolder + pluginInfo.fileName;
 
 		tasks.put(key, task);
 		task.execute(downloadFile);

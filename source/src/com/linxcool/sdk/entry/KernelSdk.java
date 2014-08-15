@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.linxcool.sdk.PluginDownloader;
 import com.linxcool.sdk.action.UpdatePluginAction;
-import com.linxcool.sdk.support.PluginDownloader;
 
 public class KernelSdk implements LifeCycle{
 

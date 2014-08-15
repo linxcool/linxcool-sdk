@@ -26,9 +26,6 @@ public abstract class ActionSupport extends Observable implements HttpListener,R
 	
 	private static final String TAG="ActionSupport";
 	
-	// 动作ID列表
-	public static final int ACTION_ID_UPDATE_PLUGIN = 0x1;
-	
 	// 响应状态结果
 	public static final int SUCCESS = 0;	//成功
 	public static final int FAILURE = 1;	//失败
@@ -38,28 +35,17 @@ public abstract class ActionSupport extends Observable implements HttpListener,R
 	protected Context context;
 	
 	//动作信息列表
-	protected int actionId;
 	protected HttpHelper httpHelper;
-	protected int method;
 	
 	protected TreeMap<String, String> gContent;
 	protected String pContent;
 	
 	//响应信息
 	protected String response;
-	
-	protected String errorMsg;
 	protected int errorCode;
+	protected String errorMsg;
 	
 	protected Object data;
-	
-	/**
-	 * 获取响应的错误消息
-	 * @return
-	 */
-	public String getErrorMsg() {
-		return errorMsg;
-	}
 	
 	/**
 	 * 获取通信失败时的错误码
@@ -69,17 +55,23 @@ public abstract class ActionSupport extends Observable implements HttpListener,R
 		return errorCode;
 	}
 	
+	/**
+	 * 获取响应的错误消息
+	 * @return
+	 */
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public <T>T getData() {
 		return (T) data;
 	}
 
-	public ActionSupport(Context context,int actionId){
+	public ActionSupport(Context context){
 		this.context = context;
-		this.actionId = actionId;
-		
 		httpHelper = new HttpHelper(context);
-		method = HttpHelper.HTTP_METHOD_POST;
+		httpHelper.setMethod(HttpHelper.HTTP_METHOD_POST);
 		gContent = new TreeMap<String, String>();
 	}
 
@@ -104,7 +96,7 @@ public abstract class ActionSupport extends Observable implements HttpListener,R
 	 * @throws JSONException
 	 */
 	protected void putBasicData(JSONObject jsonObj) throws JSONException{
-		
+		// Empty
 	}
 	
 	/**
@@ -127,12 +119,12 @@ public abstract class ActionSupport extends Observable implements HttpListener,R
 			url += "?" + sb.substring(1);
 		}
 
-		HttpUriRequest request=httpHelper.createHttpRequest(url, method);
+		HttpUriRequest request = httpHelper.createHttpRequest(url);
 		String sign = SecurityUtil.md5(url + "hDRr92iF");
 		request.addHeader("SDK-SIGN", sign);
 		
 		if(pContent != null){
-			HttpPost post=(HttpPost) request;
+			HttpPost post = (HttpPost) request;
 			post.setEntity(new StringEntity(pContent));
 		}
 		
@@ -150,6 +142,7 @@ public abstract class ActionSupport extends Observable implements HttpListener,R
 	@Override
 	public void onError(int code,String msg) {
 		Log.e(TAG,"do action response error");
+		errorCode = code;
 		errorMsg = msg;
 		response = null;
 		if(context instanceof Activity)
@@ -167,7 +160,7 @@ public abstract class ActionSupport extends Observable implements HttpListener,R
 	public void run() {
 		try {
 			setChanged();
-			if(response==null){
+			if(response == null){
 				notifyObservers(ERROR);	
 				return;
 			}
@@ -177,12 +170,10 @@ public abstract class ActionSupport extends Observable implements HttpListener,R
 				onSuccess(obj);
 				notifyObservers(SUCCESS);
 			} else {
-				if (!obj.isNull("msg"))
-					errorMsg = obj.getString("msg");
+				errorMsg = obj.optString("msg");
 				notifyObservers(FAILURE);
 			}
 		} catch (Exception e) {
-			Log.e(TAG, "parse json error on action run method ");
 			e.printStackTrace();
 			errorMsg="parse response json error";
 			notifyObservers(ERROR);
