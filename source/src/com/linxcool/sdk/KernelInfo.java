@@ -7,12 +7,11 @@ import dalvik.system.DexClassLoader;
  * <p><b>Time:</b> 2013-10-31
  * @author 胡昌海(linxcool.hu)
  */
-public class PluginInfo {
+public class KernelInfo {
 	
 	public String name;
 	public long version;
 	
-	public String updateUrl;
 	public String fileFolder;
 	public String fileName;
 	
@@ -23,10 +22,10 @@ public class PluginInfo {
 	/** 文件后缀名 */
 	public String suffix;
 
-	public PluginInfo() {
+	public KernelInfo() {
 	}
 
-	public PluginInfo(String name, long version) {
+	public KernelInfo(String name, long version) {
 		this.name = name;
 		this.version = version;
 	}

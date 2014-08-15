@@ -2,12 +2,12 @@ package com.linxcool.sdk;
 
 import java.lang.reflect.Method;
 
-public class ReflectMapping {
+public class KernelMapping {
 	
 	protected Object obj;
 	protected Class<?> cls;
 	
-	public ReflectMapping(Class<?> cls){
+	public KernelMapping(Class<?> cls){
 		try {
 			this.cls = cls;
 			this.obj = cls.newInstance();

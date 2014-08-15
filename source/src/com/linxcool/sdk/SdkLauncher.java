@@ -12,16 +12,16 @@ public class SdkLauncher {
 	private static final String NAME_SDK_KERNEL = "kernelSdk";
 	private static final String SUFFIX_SDK_PLUGIN = ".jar";
 	
-	private static PluginInstance kernelInstance;
+	private static KernelInstance kernelInstance;
 	
 	public static boolean launch(Context context, Object... args){
 		try{
-			PluginInfo info = PluginInfoManager.getLocalPluginInfo(
+			KernelInfo info = KernelInfoManager.getLocalPluginInfo(
 					context, NAME_SDK_KERNEL, SUFFIX_SDK_PLUGIN);
 			if(info == null) return false;
-			Class<?> cls = PluginLoader.load(context, info);
+			Class<?> cls = KernelLoader.load(context, info);
 			if(cls == null) return false;
-			kernelInstance = new PluginInstance(cls);
+			kernelInstance = new KernelInstance(cls);
 			kernelInstance.onCreate(context, info.version, args);
 			return true;
 		}catch(Exception e){

@@ -1,4 +1,4 @@
-package com.linxcool.sdk;
+package com.linxcool.sdk.support;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,6 +7,7 @@ import java.util.Map;
 import android.content.Context;
 import android.util.Log;
 
+import com.linxcool.sdk.support.PluginInfo;
 import com.linxcool.sdk.download.AppInfo;
 import com.linxcool.sdk.download.DownloadFile;
 import com.linxcool.sdk.download.DownloadListener;

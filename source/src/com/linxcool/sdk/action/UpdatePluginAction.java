@@ -5,10 +5,10 @@ import java.util.Observer;
 
 import org.json.JSONObject;
 
-import com.linxcool.sdk.PluginDownloader;
-import com.linxcool.sdk.PluginInfo;
-import com.linxcool.sdk.PluginInfoManager;
-import com.linxcool.sdk.PluginDownloader.OnPluginDownloadListener;
+import com.linxcool.sdk.support.PluginInfo;
+import com.linxcool.sdk.support.PluginInfoManager;
+import com.linxcool.sdk.support.PluginDownloader;
+import com.linxcool.sdk.support.PluginDownloader.OnPluginDownloadListener;
 import com.linxcool.sdk.util.ResourceUtil;
 
 import android.app.Activity;

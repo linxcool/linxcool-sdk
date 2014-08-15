@@ -8,9 +8,9 @@ import android.content.Intent;
  * <p><b>Time:</b> 2014-1-9
  * @author 胡昌海(Linxcool.Hu)
  */
-public class PluginInstance extends ReflectMapping{
+public class KernelInstance extends KernelMapping{
 
-	public PluginInstance(Class<?> cls) {
+	public KernelInstance(Class<?> cls) {
 		super(cls);
 	}
 

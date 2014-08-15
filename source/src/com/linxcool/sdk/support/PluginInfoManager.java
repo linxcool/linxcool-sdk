@@ -1,4 +1,4 @@
-package com.linxcool.sdk;
+package com.linxcool.sdk.support;
 
 import java.io.File;
 import java.io.InputStream;

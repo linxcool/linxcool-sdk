@@ -13,12 +13,12 @@ import com.linxcool.sdk.util.SecurityUtil;
  * <p><b>Time:</b> 2013-10-29
  * @author 胡昌海(linxcool.hu)
  */
-public class PluginVerifier {
+public class KernelVerifier {
 
 	private static final int LENGTH_COMMENT = 200;
 	private static final String CHARACTER_NULL = "*";
 
-	public static PluginInfo verify(File file){
+	public static KernelInfo verify(File file){
 		try {
 			return verify(new FileInputStream(file));
 		} catch (IOException e) {
@@ -27,11 +27,11 @@ public class PluginVerifier {
 		}
 	}
 	
-	public static PluginInfo verify(InputStream is){
+	public static KernelInfo verify(InputStream is){
 		return verify(new DataInputStream(is));
 	}
 
-	public static PluginInfo verify(DataInputStream dis){
+	public static KernelInfo verify(DataInputStream dis){
 		try{
 			dis.skip(dis.available() - LENGTH_COMMENT);
 			byte[] buffer = new byte[LENGTH_COMMENT];
@@ -49,7 +49,7 @@ public class PluginVerifier {
 			if(data.length < 3)
 				return null;
 
-			PluginInfo info = new PluginInfo();
+			KernelInfo info = new KernelInfo();
 			info.name = data[0];
 			info.version = Integer.parseInt(data[1]);
 			info.apiClsName = data[2];

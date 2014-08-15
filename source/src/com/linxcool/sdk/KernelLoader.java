@@ -11,10 +11,10 @@ import dalvik.system.DexClassLoader;
  * <p><b>Time:</b> 2013-10-31
  * @author 胡昌海(linxcool.hu)
  */
-public class PluginLoader {
+public class KernelLoader {
 
 	@SuppressLint("NewApi")
-	public static Class<?> load(Context context,PluginInfo pluginInfo){
+	public static Class<?> load(Context context,KernelInfo pluginInfo){
 		try {
 			// JAR文件路径
 			String dexPath = pluginInfo.fileFolder + pluginInfo.fileName;
@@ -27,7 +27,7 @@ public class PluginLoader {
 					dexPath, 
 					optimizedDir.getAbsolutePath(), 
 					libPath, 
-					PluginLoader.class.getClassLoader());
+					KernelLoader.class.getClassLoader());
 			return pluginInfo.dexLoader.loadClass(pluginInfo.apiClsName);
 		} catch (Exception e) {
 			e.printStackTrace();
