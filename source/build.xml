@@ -111,9 +111,7 @@
             
             <!-- 在这里添加混淆配置 -->
             <arg value="-keep public class com.linxcool.sdk.CmdParameters{public &lt;fields&gt;;&lt;methods&gt;;}"/>
-            <arg value="-keep public class com.linxcool.sdk.SdkLauncher{public &lt;fields&gt;;&lt;methods&gt;;}"/>
-            <arg value="-keep public class com.linxcool.sdk.SdkLauncher{public &lt;fields&gt;;&lt;methods&gt;;}"/>
-            
+            <arg value="-keep public class com.linxcool.sdk.SdkLauncher{public &lt;methods&gt;;}"/>
             
             <arg value="-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod"/>
         </java>  
@@ -154,9 +152,13 @@
             <arg value="-dontskipnonpubliclibraryclassmembers"/>
             
             <!-- 在这里添加混淆配置 -->
-            <arg value="-keep public class com.bianfeng.base.entry.BaseSdkEntry{public &lt;methods&gt;;}"/>
-            <arg value="-keep public class com.bianfeng.base.entry.AppContext{public &lt;methods&gt;;}"/>
-            <arg value="-keep public class com.bianfeng.base.entry.BaseConfig{public &lt;methods&gt;;}"/>
+            <arg value="-keep public class com.linxcool.sdk.entry.KernelSdk{public &lt;methods&gt;;}"/>
+            <arg value="-keep public class com.linxcool.sdk.entry.AppContext{public &lt;methods&gt;;}"/>
+            <arg value="-keep public class com.linxcool.sdk.entry.LifeCycle{public &lt;methods&gt;;}"/>
+            <arg value="-keep public class com.linxcool.sdk.util.*{public &lt;methods&gt;;}"/>
+            <arg value="-keep public class com.linxcool.sdk.action.ActionSupport{*;}"/>
+            <arg value="-keep public class com.linxcool.sdk.action.HttpHelper{*;}"/>
+            <arg value="-keep public class com.linxcool.sdk.action.HttpListener{*;}"/>
         </java>  
         
         <jar destfile="${plg.jar}">

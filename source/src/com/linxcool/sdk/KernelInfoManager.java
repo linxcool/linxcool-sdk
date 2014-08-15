@@ -8,8 +8,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
-import com.linxcool.sdk.util.ResourceUtil;
-
 /**
  * 插件信息管理
  * <p><b>Time:</b> 2013-10-29
@@ -46,7 +44,7 @@ public class KernelInfoManager {
 	public static void setPluginHistory(Context context,KernelInfo info){
 		Editor editor = getPreferences(context).edit();
 		editor.putString(info.name, info.fileName);
-		editor.apply();
+		editor.commit();
 	}
 
 	/**
@@ -89,7 +87,7 @@ public class KernelInfoManager {
 			return getAhistoricalPluginInfo(context, name, suffix);
 		}
 		
-		File pluginFile = ResourceUtil.newPluginFile(context, name, fileName);
+		File pluginFile = KernelResource.newPluginFile(context, name, fileName);
 		if(!pluginFile.exists()){
 			return getAhistoricalPluginInfo(context, name, suffix);
 		}
@@ -112,7 +110,7 @@ public class KernelInfoManager {
 		
 		pluginInfo.fileName = fileName;
 		pluginInfo.suffix = suffix;
-		pluginInfo.fileFolder = ResourceUtil.getPluginsFolder(context, name);
+		pluginInfo.fileFolder = KernelResource.getPluginsFolder(context, name);
 		
 		return pluginInfo;
 	}
@@ -126,7 +124,7 @@ public class KernelInfoManager {
 	 */
 	private static KernelInfo getAhistoricalPluginInfo(Context context, String name, String suffix){
 		KernelInfo assetsInfo = getAssetsPluginInfo(context, name, suffix);
-		String folder = ResourceUtil.getPluginsFolder(context, name);
+		String folder = KernelResource.getPluginsFolder(context, name);
 		KernelInfo localInfo = searchMaxVerPluginInfo(folder, name, suffix);
 		if(localInfo == null && assetsInfo == null)
 			return null;
@@ -143,7 +141,7 @@ public class KernelInfoManager {
 	 * @return 返回存储在本地的插件信息
 	 */
 	private static KernelInfo retrieveAssetsPlugin(Context context, KernelInfo assetsInfo, String suffix){
-		String targetFolder = ResourceUtil.getPluginsFolder(context, assetsInfo.name);
+		String targetFolder = KernelResource.getPluginsFolder(context, assetsInfo.name);
 		String targetFileName = assetsInfo.name + "_" + assetsInfo.version + suffix;
 		String targetFilePath = targetFolder + targetFileName;
 		
@@ -153,7 +151,7 @@ public class KernelInfoManager {
 		}
 		
 		String assetFileName = assetsInfo.name + suffix;
-		if(!ResourceUtil.retrieveFileFromAssets(context, assetFileName, targetFilePath)){
+		if(KernelResource.retrieveFileFromAssets(context, assetFileName, targetFilePath)){
 			assetsInfo.fileName = targetFileName;
 			assetsInfo.fileFolder = targetFolder;
 			assetsInfo.suffix = suffix;
@@ -249,4 +247,5 @@ public class KernelInfoManager {
 	public static void release(){
 		preferences = null;
 	}
+	
 }

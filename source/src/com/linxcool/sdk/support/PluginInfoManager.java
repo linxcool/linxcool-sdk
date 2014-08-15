@@ -46,7 +46,7 @@ public class PluginInfoManager {
 	public static void setPluginHistory(Context context,PluginInfo info){
 		Editor editor = getPreferences(context).edit();
 		editor.putString(info.name, info.fileName);
-		editor.apply();
+		editor.commit();
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class PluginInfoManager {
 		}
 		
 		String assetFileName = assetsInfo.name + suffix;
-		if(!ResourceUtil.retrieveFileFromAssets(context, assetFileName, targetFilePath)){
+		if(ResourceUtil.retrieveFileFromAssets(context, assetFileName, targetFilePath)){
 			assetsInfo.fileName = targetFileName;
 			assetsInfo.fileFolder = targetFolder;
 			assetsInfo.suffix = suffix;
