@@ -1,4 +1,4 @@
-package com.linxcool.sdk.support;
+package com.linxcool.sdk;
 
 import java.io.File;
 import java.io.InputStream;
@@ -8,14 +8,12 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
-import com.linxcool.sdk.util.ResourceUtil;
-
 /**
  * 插件信息管理
  * <p><b>Time:</b> 2013-10-29
  * @author 胡昌海(linxcool.hu)
  */
-public class PluginInfoManager {
+public class KernelInfoManager {
 
 	private static final String TAG = "PluginInfoManager";
 	private static final String PREFERENCES_NAME = "plg_launch_cfg";
@@ -43,7 +41,7 @@ public class PluginInfoManager {
 	 * @param context 上下文对象
 	 * @param info 插件信息
 	 */
-	public static void setPluginHistory(Context context,PluginInfo info){
+	public static void setPluginHistory(Context context,KernelInfo info){
 		Editor editor = getPreferences(context).edit();
 		editor.putString(info.name, info.fileName);
 		editor.commit();
@@ -56,7 +54,7 @@ public class PluginInfoManager {
 	 * @param suffix 插件文件后缀名
 	 * @return 
 	 */
-	public static PluginInfo getAssetsPluginInfo(Context context, String name, String suffix){
+	public static KernelInfo getAssetsPluginInfo(Context context, String name, String suffix){
 		InputStream is = null;
 		try{
 			is = context.getAssets().open(name + suffix);
@@ -65,7 +63,7 @@ public class PluginInfoManager {
 			return null;
 		}
 		try {
-			PluginInfo assetsInfo = PluginVerifier.verify(is);
+			KernelInfo assetsInfo = KernelVerifier.verify(is);
 			if(assetsInfo == null) return null;
 			if(!name.equals(assetsInfo.name)) return null;
 			assetsInfo.suffix = suffix;
@@ -83,20 +81,20 @@ public class PluginInfoManager {
 	 * @param suffix 插件文件后缀名
 	 * @return
 	 */
-	public static PluginInfo getLocalPluginInfo(Context context, String name, String suffix){
+	public static KernelInfo getLocalPluginInfo(Context context, String name, String suffix){
 		String fileName = getPluginHistory(context, name);
 		if(fileName == null){
 			return getAhistoricalPluginInfo(context, name, suffix);
 		}
 		
-		File pluginFile = ResourceUtil.newPluginFile(context, name, fileName);
+		File pluginFile = KernelResource.newPluginFile(context, name, fileName);
 		if(!pluginFile.exists()){
 			return getAhistoricalPluginInfo(context, name, suffix);
 		}
 		
-		PluginInfo pluginInfo = null;
+		KernelInfo pluginInfo = null;
 		try {
-			pluginInfo = PluginVerifier.verify(pluginFile);
+			pluginInfo = KernelVerifier.verify(pluginFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 			pluginInfo = null;
@@ -105,14 +103,14 @@ public class PluginInfoManager {
 			return getAhistoricalPluginInfo(context, name, suffix);
 		}
 		
-		PluginInfo assetsInfo = getAssetsPluginInfo(context, name, suffix);
+		KernelInfo assetsInfo = getAssetsPluginInfo(context, name, suffix);
 		if(assetsInfo != null && assetsInfo.version > pluginInfo.version){
 			return retrieveAssetsPlugin(context, assetsInfo, suffix);
 		}
 		
 		pluginInfo.fileName = fileName;
 		pluginInfo.suffix = suffix;
-		pluginInfo.fileFolder = ResourceUtil.getPluginsFolder(context, name);
+		pluginInfo.fileFolder = KernelResource.getPluginsFolder(context, name);
 		
 		return pluginInfo;
 	}
@@ -124,10 +122,10 @@ public class PluginInfoManager {
 	 * @param suffix 插件文件后缀名
 	 * @return
 	 */
-	private static PluginInfo getAhistoricalPluginInfo(Context context, String name, String suffix){
-		PluginInfo assetsInfo = getAssetsPluginInfo(context, name, suffix);
-		String folder = ResourceUtil.getPluginsFolder(context, name);
-		PluginInfo localInfo = searchMaxVerPluginInfo(folder, name, suffix);
+	private static KernelInfo getAhistoricalPluginInfo(Context context, String name, String suffix){
+		KernelInfo assetsInfo = getAssetsPluginInfo(context, name, suffix);
+		String folder = KernelResource.getPluginsFolder(context, name);
+		KernelInfo localInfo = searchMaxVerPluginInfo(folder, name, suffix);
 		if(localInfo == null && assetsInfo == null)
 			return null;
 		if(localInfo == null || (localInfo != null && assetsInfo != null && assetsInfo.version > localInfo.version))
@@ -142,8 +140,8 @@ public class PluginInfoManager {
 	 * @param suffix 插件文件后缀名
 	 * @return 返回存储在本地的插件信息
 	 */
-	private static PluginInfo retrieveAssetsPlugin(Context context, PluginInfo assetsInfo, String suffix){
-		String targetFolder = ResourceUtil.getPluginsFolder(context, assetsInfo.name);
+	private static KernelInfo retrieveAssetsPlugin(Context context, KernelInfo assetsInfo, String suffix){
+		String targetFolder = KernelResource.getPluginsFolder(context, assetsInfo.name);
 		String targetFileName = assetsInfo.name + "_" + assetsInfo.version + suffix;
 		String targetFilePath = targetFolder + targetFileName;
 		
@@ -153,7 +151,7 @@ public class PluginInfoManager {
 		}
 		
 		String assetFileName = assetsInfo.name + suffix;
-		if(ResourceUtil.retrieveFileFromAssets(context, assetFileName, targetFilePath)){
+		if(KernelResource.retrieveFileFromAssets(context, assetFileName, targetFilePath)){
 			assetsInfo.fileName = targetFileName;
 			assetsInfo.fileFolder = targetFolder;
 			assetsInfo.suffix = suffix;
@@ -172,7 +170,7 @@ public class PluginInfoManager {
 	 * @param suffix 插件文件后缀名
 	 * @return 
 	 */
-	private static PluginInfo searchMaxVerPluginInfo(String folder, String name, String suffix){
+	private static KernelInfo searchMaxVerPluginInfo(String folder, String name, String suffix){
 		File[] list = new File(folder).listFiles();
 		if(list == null || list.length == 0){
 			return null;
@@ -203,9 +201,9 @@ public class PluginInfoManager {
 			return null;
 		
 		// 校验文件信息
-		PluginInfo info = null;
+		KernelInfo info = null;
 		try {
-			info = PluginVerifier.verify(maxVerFile);
+			info = KernelVerifier.verify(maxVerFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 			info = null;
@@ -249,4 +247,5 @@ public class PluginInfoManager {
 	public static void release(){
 		preferences = null;
 	}
+	
 }

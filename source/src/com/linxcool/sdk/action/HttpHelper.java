@@ -3,7 +3,6 @@ package com.linxcool.sdk.action;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
 
 import org.apache.http.HttpEntity;
@@ -38,7 +37,7 @@ public class HttpHelper {
 	private Context context;
 	
 	/** 网络配置 */
-	public static String REQUEST_HOST;
+	public static String REQUEST_HOST = "http://kitchens.sinaapp.com/";
 
 	/** HTTP常量-GET请求 */
 	public static final int HTTP_METHOD_GET = 1;
@@ -62,13 +61,14 @@ public class HttpHelper {
 
 	private HttpClient client;
 	private HttpResponse response;
+	private int method;
 
 	public HttpHelper(Context context) {
 		this.context=context;
 	}
 	
-	public static void setRequestHost(String host){
-		REQUEST_HOST = host;
+	public void setMethod(int method) {
+		this.method = method;
 	}
 
 	public HttpClient createHttpClient(){
@@ -85,7 +85,7 @@ public class HttpHelper {
 		return new DefaultHttpClient(params);
 	}
 
-	public HttpUriRequest createHttpRequest(String url,int method){
+	public HttpUriRequest createHttpRequest(String url){
 		HttpUriRequest request=null;
 		if(method == HTTP_METHOD_GET){
 			request=new HttpGet(url);
@@ -99,14 +99,14 @@ public class HttpHelper {
 	}
 
 	public boolean openUrl(HttpUriRequest request){
-		client=createHttpClient();
 		try {
-			response=client.execute(request);
+			client = createHttpClient();
+			response = client.execute(request);
 			
-			StatusLine statusLine=response.getStatusLine();
+			StatusLine statusLine = response.getStatusLine();
 			if(statusLine == null)return true;
 			
-			int code=statusLine.getStatusCode();
+			int code = statusLine.getStatusCode();
 			if(code == HttpStatus.SC_OK)
 				return true;
 			else{
@@ -114,16 +114,13 @@ public class HttpHelper {
 				errorMsg = statusLine.getReasonPhrase();
 				return false;
 			}
-		}catch (ConnectTimeoutException e) {
-			errorCode=ERROR_CODE_TIME_OUT;
-			errorMsg="connect timeout";
-		}catch (SocketTimeoutException e) {
-			errorCode=ERROR_CODE_TIME_OUT;
-			errorMsg="socket timeout";
-		}catch (Exception e) {
+		} catch (ConnectTimeoutException e) {
+			errorCode = ERROR_CODE_TIME_OUT;
+			errorMsg = "connect(or socket) timeout";
+		} catch (Exception e) {
 			e.printStackTrace();
 			errorCode=ERROR_CODE_UNKNOW;
-			errorMsg="request data error "+e.getMessage();
+			errorMsg="request data error " + e.getMessage();
 		}
 		return false;
 	}

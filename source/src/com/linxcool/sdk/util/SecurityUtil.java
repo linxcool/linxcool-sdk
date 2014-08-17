@@ -78,7 +78,7 @@ public class SecurityUtil {
 	
 	public static String md5(String input) {
 		try {
-			return md5(input, 16);
+			return md5(input, 32);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -86,7 +86,7 @@ public class SecurityUtil {
 	}
 
 	/**
-	 * aes加密
+	 * AES加密
 	 * @param content 需要加密的内容 待加密内容的长度必须是16的倍数
 	 * @param in 加密密码 必须是16位
 	 * @return
@@ -108,7 +108,7 @@ public class SecurityUtil {
 	}
 
 	/**
-	 * aes解密
+	 * AES解密
 	 * @param str 待解密内容
 	 * @param in 解密密钥 必须为16的整数倍
 	 * @return
@@ -135,7 +135,7 @@ public class SecurityUtil {
 	 * @param content
 	 * @return
 	 */
-	static String addContent(String content) {
+	private static String addContent(String content) {
 		int srcLen = content.length();
 		int addedLen = srcLen - 16 * (srcLen / 16);
 		for (int i = 0; i < addedLen; i++) {
@@ -149,7 +149,7 @@ public class SecurityUtil {
 	 * @param content
 	 * @return
 	 */
-	static String reduceCotent(String content) {
+	private static String reduceCotent(String content) {
 		String rs = "";
 		for (int i = 0; i < content.length(); i++) {
 			char c = content.charAt(i);

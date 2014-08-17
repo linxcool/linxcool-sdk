@@ -7,31 +7,26 @@ import dalvik.system.DexClassLoader;
  * <p><b>Time:</b> 2013-10-31
  * @author 胡昌海(linxcool.hu)
  */
-public class LaunchPluginInfo {
+public class KernelInfo {
 	
-	public String plugName;
-	public long plugVer;
+	public String name;
+	public long version;
 	
-	public boolean isLatest;
-	public String updateUrl;
-	public String savePath;
+	public String fileFolder;
 	public String fileName;
 	
 	/** 用于加载的接口类 */
 	public String apiClsName;
-	
 	/** 记载该插件的DexClassLoader */
 	public DexClassLoader dexLoader;
-	
 	/** 文件后缀名 */
 	public String suffix;
 
-	public LaunchPluginInfo() {
-		super();
+	public KernelInfo() {
 	}
 
-	public LaunchPluginInfo(String plugName, long plugVer) {
-		this.plugName = plugName;
-		this.plugVer = plugVer;
+	public KernelInfo(String name, long version) {
+		this.name = name;
+		this.version = version;
 	}
 }

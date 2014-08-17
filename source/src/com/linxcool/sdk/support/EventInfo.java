@@ -23,7 +23,7 @@ public class EventInfo {
 	public String ext3;
 	public String time;
 	
-	public int mid;
+	public String mid;
 	public int appId;
 	public int channelId;
 	public int appVer;

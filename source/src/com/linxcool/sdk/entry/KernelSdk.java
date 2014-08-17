@@ -4,15 +4,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.linxcool.sdk.action.UpdatePluginAction;
+import com.linxcool.sdk.support.PluginDownloader;
+
 public class KernelSdk implements LifeCycle{
 
 	private static final String TAG = "KernelSdk";
 	
 	@Override
 	public void onCreate(Context context, Object... args) {
-		Log.i(TAG, "kernel sdk created");
+		int version = Integer.parseInt(String.valueOf(args[0]));
+		Log.i(TAG, "kernel sdk created " + version);
+		updateKernel(context, version);
 	}
 
+	private void updateKernel(Context context, int version){
+		PluginDownloader.init(context);
+		UpdatePluginAction action = new UpdatePluginAction(context);
+		action.putReqData("kernelSdk", version);
+		action.actionStart();
+	}
+	
 	@Override
 	public void onCommand(Context context, Intent intent) {
 		

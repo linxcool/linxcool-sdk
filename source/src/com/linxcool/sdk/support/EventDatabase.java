@@ -25,7 +25,7 @@ public class EventDatabase extends SQLiteOpenHelper {
 
 	private static final String[][] COLUMNS = new String[][]{
 		{"_id",			"INTEGER PRIMARY KEY"},
-		{"mid",			"INTEGER NOT NULL"},
+		{"mid",			"TEXT NOT NULL"},
 		{"channelid",	"INTEGER NOT NULL"},
 		{"appid",		"INTEGER NOT NULL"},
 		{"verid",		"INTEGER NOT NULL"},
@@ -52,10 +52,10 @@ public class EventDatabase extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		String args = "";
-		for (int i = 0; i < COLUMNS.length; i++)
+		for (int i = 0; i < COLUMNS.length; i++){
 			args += String.format(",%s %s", COLUMNS[i][0], COLUMNS[i][1]);
-		String sql = String.format(
-				"CREATE TABLE IF NOT EXISTS %s (%s)",TABLE_NAME,args.substring(1));
+		}
+		String sql = String.format("CREATE TABLE IF NOT EXISTS %s (%s)",TABLE_NAME, args.substring(1));
 		db.execSQL(sql);
 	}
 
@@ -135,10 +135,7 @@ public class EventDatabase extends SQLiteOpenHelper {
 		synchronized (lock) {
 			SQLiteDatabase db = getWritableDatabase();
 			try{
-				String sql = String.format("DELETE FROM %s WHERE %s IN (%s)", 
-						TABLE_NAME,
-						COLUMNS[0][0],
-						_ids);
+				String sql = String.format("DELETE FROM %s WHERE %s IN (%s)", TABLE_NAME, COLUMNS[0][0], _ids);
 				db.beginTransaction();
 				db.execSQL(sql);
 				db.setTransactionSuccessful();
@@ -160,15 +157,13 @@ public class EventDatabase extends SQLiteOpenHelper {
 			SQLiteDatabase db = getReadableDatabase();
 			try{
 				List<EventInfo> result = new ArrayList<EventInfo>();
-				String sql = String.format("SELECT * FROM %s ORDER BY %s LIMIT 50", 
-						TABLE_NAME,
-						COLUMNS[0][0]);
+				String sql = String.format("SELECT * FROM %s ORDER BY %s LIMIT 50", TABLE_NAME, COLUMNS[0][0]);
 				Cursor cursor = db.rawQuery(sql, null);
 				while(cursor.moveToNext()){
 					EventInfo data = new EventInfo();
 					data._id = cursor.getInt(0);
 					
-					data.mid = cursor.getInt(1);
+					data.mid = cursor.getString(1);
 					data.channelId = cursor.getInt(2);
 					data.appId = cursor.getInt(3);
 					data.appVer = cursor.getInt(4);

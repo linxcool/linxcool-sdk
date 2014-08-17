@@ -25,7 +25,7 @@ import android.util.Log;
  * <p>实现图片、文本及文件的持久化 
  * @author: linxcool.hu
  */
-public class LaunchResourceUtil {
+public class KernelResource {
 
 	private static final String TAG = "ResourceUtil";
 	

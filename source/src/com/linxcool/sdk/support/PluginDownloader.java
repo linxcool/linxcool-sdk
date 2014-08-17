@@ -7,6 +7,7 @@ import java.util.Map;
 import android.content.Context;
 import android.util.Log;
 
+import com.linxcool.sdk.support.PluginInfo;
 import com.linxcool.sdk.download.AppInfo;
 import com.linxcool.sdk.download.DownloadFile;
 import com.linxcool.sdk.download.DownloadListener;
@@ -37,7 +38,7 @@ public class PluginDownloader{
 		 * @param code
 		 * @param msg
 		 */
-		public void onError(int code, String msg);
+		public void onDError(int code, String msg);
 	}
 
 	private static final String TAG = "PluginDownloader";
@@ -65,7 +66,7 @@ public class PluginDownloader{
 
 		String key = SecurityUtil.md5(pluginInfo.updateUrl);
 		if(tasks.containsKey(key)){
-			Log.w(TAG, "plugin is on downloading " + pluginInfo.plugName);
+			Log.w(TAG, "plugin is on downloading " + pluginInfo.name);
 			return ;
 		}
 
@@ -84,7 +85,7 @@ public class PluginDownloader{
 			public void onError(int code, DownloadFile fileInfo) {
 				String key = SecurityUtil.md5(fileInfo.appInfo.apkUrl);
 				tasks.remove(key);
-				listener.onError(code, "download plugin fail");
+				listener.onDError(code, "download plugin fail");
 			}
 			
 			@Override
@@ -98,7 +99,7 @@ public class PluginDownloader{
 		AppInfo appInfo = new AppInfo();
 		appInfo.apkUrl = pluginInfo.updateUrl;
 		DownloadFile downloadFile = new DownloadFile(appInfo);
-		downloadFile.filePath = pluginInfo.savePath + pluginInfo.fileName;
+		downloadFile.filePath = pluginInfo.fileFolder + pluginInfo.fileName;
 
 		tasks.put(key, task);
 		task.execute(downloadFile);

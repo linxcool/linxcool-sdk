@@ -50,8 +50,8 @@ public class PluginVerifier {
 				return null;
 
 			PluginInfo info = new PluginInfo();
-			info.plugName = data[0];
-			info.plugVer = Integer.parseInt(data[1]);
+			info.name = data[0];
+			info.version = Integer.parseInt(data[1]);
 			info.apiClsName = data[2];
 			
 			return info;

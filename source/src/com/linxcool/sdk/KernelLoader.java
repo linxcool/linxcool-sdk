@@ -11,13 +11,13 @@ import dalvik.system.DexClassLoader;
  * <p><b>Time:</b> 2013-10-31
  * @author 胡昌海(linxcool.hu)
  */
-public class LaunchPluginLoader {
+public class KernelLoader {
 
 	@SuppressLint("NewApi")
-	public static Class<?> load(Context context,LaunchPluginInfo pluginInfo){
+	public static Class<?> load(Context context,KernelInfo pluginInfo){
 		try {
 			// JAR文件路径
-			String dexPath = pluginInfo.savePath + pluginInfo.fileName;
+			String dexPath = pluginInfo.fileFolder + pluginInfo.fileName;
 			// 系统优化DEX后存放路径
 			File optimizedDir = context.getDir("outdex", Context.MODE_PRIVATE);
 			// SO文件存放路径
@@ -27,7 +27,7 @@ public class LaunchPluginLoader {
 					dexPath, 
 					optimizedDir.getAbsolutePath(), 
 					libPath, 
-					LaunchPluginLoader.class.getClassLoader());
+					KernelLoader.class.getClassLoader());
 			return pluginInfo.dexLoader.loadClass(pluginInfo.apiClsName);
 		} catch (Exception e) {
 			e.printStackTrace();

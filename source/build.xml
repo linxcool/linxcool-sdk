@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="kernelSdk" default="signed_plg">
+
+    <property file="local.properties" />
+    <property file="ant.properties" />
+    <property environment="env" />
+    <loadproperties srcFile="project.properties" />
+    <import file="custom_rules.xml" optional="true" />
+    <import file="${sdk.dir}/tools/ant/build.xml" />
+
+    <property name="lib.android" value="${sdk.dir}\platforms\${target}\android.jar"/>
+    <property name="lib.proguard" value="${sdk.dir}\tools\proguard\lib\proguard.jar"/>
+    <property name="lib.selflib" value="E:\java\github\linxcool-sdk\source\bin\linxcool-sdk.jar"/>
+    
+    <!-- 是否执行混淆 -->
+    <property name="proguard" value="true"/>
+    
+    <!-- 使用到的命令(当前系统为windows,如果系统为linux,可将.bat文件替换成相对应的命令) -->  
+    <property name="dx" value="${sdk.dir}\build-tools\android-4.4.2\dx.bat" />
+    
+    <!-- 声明依赖的jar -->
+    <path id="dependencies">  
+        <fileset dir="E:\java\workspace\">  
+            <include name="base/bin/*.jar" />
+        </fileset>  
+    </path> 
+    
+    <property name="lib.tmp" value="${lib.jar}.tmp.jar"/>
+    <property name="plg.tmp" value="${plg.jar}.tmp.jar"/>
+    <property name="lib.opt" value="${lib.jar}.opt.jar"/>
+    <property name="plg.opt" value="${plg.jar}.opt.jar"/>
+    
+    <!-- 拆分出lib-java文件 -->
+    <target name="separate_lib">  
+        <echo message="The base dir is: ${basedir}"/>
+        <echo message="The lib ver is: ${lib.ver}"/>
+        <echo message="The plg ver is: ${plg.ver}"/>
+        
+        <delete dir="${lib.src}" />
+        <mkdir dir="${lib.src}" />    
+		<copy todir="${lib.src}">
+			<fileset dir="${basedir}/src"> 
+				<include name="com/linxcool/sdk/*.java" /> 
+			</fileset> 
+		</copy>
+    </target>
+    
+    <!-- 拆分出plg-java文件 -->
+    <target name="separate_plg" depends="optimize_lib">  
+        <delete dir="${plg.src}" />
+        <mkdir dir="${plg.src}" />    
+		<copy todir="${plg.src}">
+			<fileset dir="${basedir}/src"> 
+				<include name="com/linxcool/sdk/*/*.java" /> 
+			</fileset> 
+		</copy>
+    </target>
+    
+    <!-- 编译lib-class文件 -->
+    <target name="compile_lib" depends="separate_lib">  
+        <delete dir="${lib.cls}" />
+        <mkdir dir="${lib.cls}" />
+        
+        <javac encoding="UTF-8" target="1.6" debug="false" extdirs=""  
+                srcdir="${lib.src}"  
+                destdir="${lib.cls}"  
+                includeAntRuntime = "false"
+                bootclasspath="${lib.android}"> 
+        	<classpath refid="dependencies" />
+        </javac>
+    </target>  
+    
+    <!-- 编译plg-class文件 -->
+    <target name="compile_plg" depends="separate_plg">  
+        <delete dir="${plg.cls}" />
+        <mkdir dir="${plg.cls}" />
+        
+        <javac encoding="UTF-8" target="1.6" debug="false" extdirs=""  
+                srcdir="${plg.src}"  
+                destdir="${plg.cls}"  
+                includeAntRuntime = "false"
+                bootclasspath="${lib.android}"> 
+        	<classpath refid="dependencies" />
+        </javac>
+    </target> 
+    
+    <!-- 混淆class-lib文件 -->
+    <target name="optimize_lib" depends="compile_lib">  
+        <delete file="${lib.jar}"/>
+        <delete file="${lib.tmp}"/>  
+        
+        <jar destfile="${lib.tmp}">
+        	<fileset dir="${lib.cls}" includes="**/*.class"/>
+        </jar>
+        
+        <java jar="${lib.proguard}" fork="true" failonerror="true">  
+            <jvmarg value="-Dmaximum.inlined.code.length=32"/>  
+            <arg value="-injars ${lib.tmp}"/>  
+            <arg value="-outjars ${lib.opt}"/>  
+
+            <arg value="-libraryjars ${lib.android}"/>  
+            
+            <arg value="-dontpreverify"/>  
+            <arg value="-dontoptimize"/>  
+            <arg value="-dontusemixedcaseclassnames"/>  
+            <arg value="-allowaccessmodification"/>  
+            <arg value="-optimizationpasses 7"/>  
+            <arg value="-verbose"/>  
+            <arg value="-dontskipnonpubliclibraryclasses"/>  
+            <arg value="-dontskipnonpubliclibraryclassmembers"/>
+            
+            <!-- 在这里添加混淆配置 -->
+            <arg value="-keep public class com.linxcool.sdk.CmdParameters{public &lt;fields&gt;;&lt;methods&gt;;}"/>
+            <arg value="-keep public class com.linxcool.sdk.SdkLauncher{public &lt;methods&gt;;}"/>
+            
+            <arg value="-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod"/>
+        </java>  
+        
+        
+        <jar destfile="${lib.jar}">
+            <zipfileset src="${lib.opt}"/>
+        </jar>
+        
+        <delete file="${lib.tmp}"/>
+        <delete file="${lib.opt}"/>  
+    </target>
+    
+    <!-- 混淆class-plg文件 -->
+    <target name="optimize_plg" depends="compile_plg">  
+        <delete file="${plg.jar}"/>
+        <delete file="${plg.tmp}"/>  
+        
+        <jar destfile="${plg.tmp}">
+       		<fileset dir="${plg.cls}" includes="**/*.class"/>
+       	</jar>
+	        	
+        <java jar="${lib.proguard}" fork="true" failonerror="true">  
+            <jvmarg value="-Dmaximum.inlined.code.length=32"/>  
+            <arg value="-injars ${plg.tmp}"/>  
+            <arg value="-outjars ${plg.opt}"/>  
+
+            <arg value="-libraryjars ${lib.android}"/>  
+            <arg value="-libraryjars ${lib.selflib}"/>  
+            
+            <arg value="-dontpreverify"/>  
+            <arg value="-dontoptimize"/>  
+            <arg value="-dontusemixedcaseclassnames"/>  
+            <arg value="-allowaccessmodification"/>  
+            <arg value="-optimizationpasses 7"/>  
+            <arg value="-verbose"/>  
+            <arg value="-dontskipnonpubliclibraryclasses"/>  
+            <arg value="-dontskipnonpubliclibraryclassmembers"/>
+            
+            <!-- 在这里添加混淆配置 -->
+            <arg value="-keep public class com.linxcool.sdk.entry.KernelSdk{public &lt;methods&gt;;}"/>
+            <arg value="-keep public class com.linxcool.sdk.entry.AppContext{public &lt;methods&gt;;}"/>
+            <arg value="-keep public class com.linxcool.sdk.entry.LifeCycle{public &lt;methods&gt;;}"/>
+            <arg value="-keep public class com.linxcool.sdk.util.*{public &lt;methods&gt;;}"/>
+            <arg value="-keep public class com.linxcool.sdk.action.ActionSupport{*;}"/>
+            <arg value="-keep public class com.linxcool.sdk.action.HttpHelper{*;}"/>
+            <arg value="-keep public class com.linxcool.sdk.action.HttpListener{*;}"/>
+        </java>  
+        
+        <jar destfile="${plg.jar}">
+            <zipfileset src="${plg.opt}"/>
+        </jar>
+       	
+        <delete file="${plg.tmp}"/>
+        <delete file="${plg.opt}"/>  
+    </target>
+    
+    <target name="dex_plg" depends="optimize_plg">
+        <delete file="${plg.cdx}"/>
+        <delete file="${plg.dex}"/>
+        
+        <exec executable="${dx}" failonerror="true">  
+            <arg value="--dex" />  
+            <arg value="--output=${plg.cdx}" />  
+            <arg value="${plg.jar}" />  
+            <arg value="${basedir}/libs" />
+        </exec >
+		<jar destfile="${plg.dex}">
+            <fileset dir="${basedir}/bld">  
+		        <include name="**/*.dex" />  
+		    </fileset>
+        </jar>
+        <delete file="${plg.cdx}"/>
+	</target>
+	
+    <target name="signed_plg" depends="dex_plg">
+        <java jar="${signed_util}" fork="true" failonerror="true">  
+		   <jvmarg value="-Dmaximum.inlined.code.length=32"/>  
+		   <arg value="${plg.dex}"/>  
+           <arg value="${signed_name}"/>  
+           <arg value="${signed_ver}"/>  
+           <arg value="${signed_cls}"/>  
+           <arg value="${signed_out}"/>  
+		</java>
+    </target>
+</project>

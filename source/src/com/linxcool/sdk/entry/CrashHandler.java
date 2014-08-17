@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
+import com.linxcool.sdk.util.ResourceUtil;
+
 import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
@@ -68,7 +70,7 @@ public final class CrashHandler implements UncaughtExceptionHandler,Runnable{
 			return false;
 
 		new Thread(this).start();
-		collectDeviceInfo(context,infos);
+		collectDeviceInfo(context, infos);
 		saveCrashInfo(exc);
 
 		return true;
@@ -85,7 +87,7 @@ public final class CrashHandler implements UncaughtExceptionHandler,Runnable{
 	 * 收集设备参数信息
 	 * @param context
 	 */
-	public void collectDeviceInfo(Context context,Map<String, String> infos) {
+	public void collectDeviceInfo(Context context, Map<String, String> infos) {
 		try {
 			Field[] fields = Build.class.getDeclaredFields();
 			for (Field field : fields) {
@@ -127,7 +129,7 @@ public final class CrashHandler implements UncaughtExceptionHandler,Runnable{
 			JSONObject obj = new JSONObject();
 			obj.put("content", sb.toString());
 			
-			// 在此处添加其他代码
+			ResourceUtil.writeStringData(context, "crash" + System.currentTimeMillis(), obj.toString());
 			
 			return obj.toString();
 		} catch (Exception e) {
