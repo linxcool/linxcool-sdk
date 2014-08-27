@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="kernelSdk" default="signed_plg">
+<project name="kernelSdk" default="release">
 
     <property file="local.properties" />
     <property file="ant.properties" />
@@ -46,7 +46,7 @@
     </target>
     
     <!-- 拆分出plg-java文件 -->
-    <target name="separate_plg" depends="optimize_lib">  
+    <target name="separate_plg">  
         <delete dir="${plg.src}" />
         <mkdir dir="${plg.src}" />    
 		<copy todir="${plg.src}">
@@ -196,5 +196,18 @@
            <arg value="${signed_cls}"/>  
            <arg value="${signed_out}"/>  
 		</java>
+    </target>
+    
+    <target name="release" depends="optimize_lib, signed_plg">
+        <delete dir="${code_src}"/>
+        <delete dir="${code_cls}"/>
+        <delete file="${file_release}"/>
+        
+         <jar destfile="${file_release}">
+            <zipfileset src="${lib.jar}"/>
+            <zipfileset dir="${basedir}/bld" prefix="assets">
+			    <include name="${signed_name}.jar"/>
+			</zipfileset>
+        </jar>
     </target>
 </project>
